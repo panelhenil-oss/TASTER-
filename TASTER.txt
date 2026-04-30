@@ -9,8 +9,8 @@ screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 260, 0, 130)
-frame.Position = UDim2.new(0.5, -130, 0.5, -65)
+frame.Size = UDim2.new(0, 260, 0, 145)
+frame.Position = UDim2.new(0.5, -130, 0.5, -72)
 frame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 frame.BorderSizePixel = 0
 frame.Parent = screenGui
@@ -19,7 +19,7 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 10)
 corner.Parent = frame
 
--- Drag
+-- Drag (ceo frame se pomera)
 local dragging, dragStart, startPos = false, nil, nil
 
 frame.InputBegan:Connect(function(input)
@@ -64,7 +64,7 @@ local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, -30, 1, 0)
 titleLabel.Position = UDim2.new(0, 10, 0, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "⚠  RIVALS SCRIPT — Update Required"
+titleLabel.Text = "RIVALS SCRIPT — Update Required"
 titleLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
 titleLabel.TextSize = 11
 titleLabel.Font = Enum.Font.GothamBold
@@ -88,10 +88,10 @@ end)
 
 -- Subtitle
 local subtitle = Instance.new("TextLabel")
-subtitle.Size = UDim2.new(1, -20, 0, 30)
+subtitle.Size = UDim2.new(1, -20, 0, 44)
 subtitle.Position = UDim2.new(0, 10, 0, 38)
 subtitle.BackgroundTransparency = 1
-subtitle.Text = "Press the button below to copy the update link."
+subtitle.Text = "Press the button below to copy the update link.\nA browser must open for the link to work."
 subtitle.TextColor3 = Color3.fromRGB(160, 160, 160)
 subtitle.TextSize = 11
 subtitle.Font = Enum.Font.Gotham
@@ -99,10 +99,10 @@ subtitle.TextWrapped = true
 subtitle.TextXAlignment = Enum.TextXAlignment.Left
 subtitle.Parent = frame
 
--- Copy Button (ljubicasta boja)
+-- Copy Button
 local button = Instance.new("TextButton")
 button.Size = UDim2.new(1, -20, 0, 32)
-button.Position = UDim2.new(0, 10, 0, 86)
+button.Position = UDim2.new(0, 10, 0, 100)
 button.BackgroundColor3 = Color3.fromRGB(120, 60, 200)
 button.BorderSizePixel = 0
 button.Text = "Copy Update Link"
@@ -119,7 +119,7 @@ local link = "https://linkvertise.com/1239053/LsCaHYxhHUkb"
 
 button.MouseButton1Click:Connect(function()
     setclipboard(link)
-    button.Text = "✔  Copied!"
+    button.Text = "Copied!"
     button.BackgroundColor3 = Color3.fromRGB(40, 180, 80)
     task.wait(2)
     button.Text = "Copy Update Link"
