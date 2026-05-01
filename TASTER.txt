@@ -6,6 +6,8 @@ local playerGui = player:WaitForChild("PlayerGui")
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "RivalsMenu"
 screenGui.ResetOnSpawn = false
+screenGui.DisplayOrder = 999  -- UVEK ISPRED SVEGA
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
 local frame = Instance.new("Frame")
@@ -13,40 +15,12 @@ frame.Size = UDim2.new(0, 260, 0, 145)
 frame.Position = UDim2.new(0.5, -130, 0.5, -72)
 frame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 frame.BorderSizePixel = 0
+frame.ZIndex = 10
 frame.Parent = screenGui
 
 local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 10)
 corner.Parent = frame
-
--- Drag (ceo frame se pomera)
-local dragging, dragStart, startPos = false, nil, nil
-
-frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = frame.Position
-    end
-end)
-
-frame.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = input.Position - dragStart
-        frame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-    end
-end)
 
 -- Title bar
 local titleBar = Instance.new("Frame")
@@ -54,6 +28,7 @@ titleBar.Size = UDim2.new(1, 0, 0, 32)
 titleBar.Position = UDim2.new(0, 0, 0, 0)
 titleBar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 titleBar.BorderSizePixel = 0
+titleBar.ZIndex = 11
 titleBar.Parent = frame
 
 local titleCorner = Instance.new("UICorner")
@@ -69,6 +44,7 @@ titleLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
 titleLabel.TextSize = 11
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.ZIndex = 12
 titleLabel.Parent = titleBar
 
 -- X close button
@@ -80,10 +56,59 @@ close.Text = "X"
 close.TextColor3 = Color3.fromRGB(220, 220, 220)
 close.TextSize = 13
 close.Font = Enum.Font.GothamBold
+close.ZIndex = 12
 close.Parent = titleBar
 
 close.MouseButton1Click:Connect(function()
     screenGui:Destroy()
+end)
+
+-- DRAG SISTEM (radi i na mobitelu i na racunaru)
+local dragging = false
+local dragStartPos = nil
+local frameStartPos = nil
+
+local function startDrag(input)
+    dragging = true
+    dragStartPos = input.Position
+    frameStartPos = frame.Position
+end
+
+local function updateDrag(input)
+    if not dragging then return end
+    local delta = input.Position - dragStartPos
+    frame.Position = UDim2.new(
+        frameStartPos.X.Scale,
+        frameStartPos.X.Offset + delta.X,
+        frameStartPos.Y.Scale,
+        frameStartPos.Y.Offset + delta.Y
+    )
+end
+
+local function stopDrag()
+    dragging = false
+end
+
+-- Podrska za mis i touch (mobilni)
+titleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 
+    or input.UserInputType == Enum.UserInputType.Touch then
+        startDrag(input)
+    end
+end)
+
+titleBar.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 
+    or input.UserInputType == Enum.UserInputType.Touch then
+        stopDrag()
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement 
+    or input.UserInputType == Enum.UserInputType.Touch then
+        updateDrag(input)
+    end
 end)
 
 -- Subtitle
@@ -97,6 +122,7 @@ subtitle.TextSize = 11
 subtitle.Font = Enum.Font.Gotham
 subtitle.TextWrapped = true
 subtitle.TextXAlignment = Enum.TextXAlignment.Left
+subtitle.ZIndex = 11
 subtitle.Parent = frame
 
 -- Copy Button
@@ -109,6 +135,7 @@ button.Text = "Copy Update Link"
 button.TextColor3 = Color3.fromRGB(255, 255, 255)
 button.TextSize = 12
 button.Font = Enum.Font.GothamBold
+button.ZIndex = 11
 button.Parent = frame
 
 local btnCorner = Instance.new("UICorner")
